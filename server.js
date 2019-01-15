@@ -2,13 +2,20 @@
 var fs = require('fs');
 var logfmt = require("logfmt");//heroku logs
 var express = require("express");//servidor web
+var path = require('path');
+const knex= require('./db/knex');
 var app = express();
 var file = 'contador.data';
+var indexRouter = require('./routes/index');
 var contador = 0;
-
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'hbs');
 app.use(logfmt.requestLogger());
-
+app.use(express.static(path.join(__dirname, 'public')));
 //http://contarvisitas.herokuapp.com/
+
+app.use('/', indexRouter);
+/*
 app.get('/', function(req, res) {
     fs.exists(file, function(exists){
         if (exists) {
@@ -25,7 +32,18 @@ app.get('/', function(req, res) {
         }
     });
 });
+*/
+app.get('/users',function(req, res){
+   /* res.type('text/plain');
+    res.send('Mi página principal');*/
+    knex('usuarios')
+    .select()
+    .then(usuarios =>{
+        res.render('user', {objUser: usuarios});
+    });
 
+   // res.render('usuario');
+});
 //http://contarvisitas.herokuapp.com/json
 app.get('/json', function(req, res) {
     fs.exists(file, function(exists){

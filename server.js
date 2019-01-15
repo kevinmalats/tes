@@ -5,6 +5,7 @@ var express = require("express");//servidor web
 var path = require('path');
 const knex= require('./db/knex');
 var app = express();
+const port = process.env.PORT || 3000
 var file = 'contador.data';
 var indexRouter = require('./routes/index');
 var contador = 0;
